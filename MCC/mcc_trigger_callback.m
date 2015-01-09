@@ -10,10 +10,20 @@ ts.fs = ai.SampleRate;
 ai.SamplesAcquiredFcn = {@myFn};
 %ai.flushdata
 
+
+% save data to file
+matname = [datestr(now,'yyyy-mm-dd HH_MM_SS') '.mat'];
+while existfile(matname)
+    matname = [matname '_1'];
+end
+save(fullfile(dname,matname),'ts')
+
+
 % show results
 fprintf('Plotting results...\n')
 close all
 plotDAQdata(ts)
+title(matname,'Interpreter','none')
 
 % figure(1)
 % subplot(3,1,1)
@@ -24,11 +34,3 @@ plotDAQdata(ts)
 % xlabel('Time (ms)')
 % ylabel('Frequency (kHz)')
 % colormap(jet)
-
-% save data to file
-matname = [datestr(now,'yyyy-mm-dd HH_MM_SS') '.mat'];
-while existfile(matname)
-    matname = [matname '_1'];
-end
-save(fullfile(dname,matname),'ts')
- 
