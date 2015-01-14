@@ -1,4 +1,4 @@
-function plotDAQdata(ts,fband)
+function fd = plotDAQdata(ts,fband)
 % PLOTDAQDATA plots the time series, power spectral density, and
 % spectrogram of time series data
 %
@@ -10,11 +10,15 @@ function plotDAQdata(ts,fband)
 %   used with cutoff frequencies of fl and fh.  If fc is a number less
 %   than 10% of the sampling rate, a high-pass filter is used with a
 %   cutoff frequency of fc Hz.  Otherwise, a low-pass filter is used.
+% fd = plotDAQdata(...) also returns the frequency analysis data
 %
 % Note:  The forward-backward filter is used to cancel out phase shifts
 % caused by the filtering.  Therefore, an Nth order magnitude response will
 % be applied as a 2*Nth order filter with zero-phase shift and no group
 % delay.
+
+yRange = 100;
+cRange = 40;
 
 % remove low frequency noise component
 if nargin > 1
@@ -38,7 +42,8 @@ fd = calc_spectrum(ts.data,ts.fs);
 fd = convert_spectrum(fd,'Vrms/rtHz');
 
 % plot data
-figure
+figure(gcf)
+
 subplot(4,1,1)
 plot(ts.time,ts.data(:,1))
 xlabel('Time (sec)')
@@ -49,7 +54,8 @@ subplot(4,1,2)
 plot(fd.freq*1e-3,fd.magdb)
 ylabel(sprintf('Amplitude (dB%s)',fd.units))
 xlabel('Freqency (kHz)')
-set(gca,'ylim',[-120 -50])
+yMax = max(get(gca,'yLim'));
+set(gca,'ylim',[yMax-yRange yMax])
 grid on
 
 subplot(4,1,3:4)
@@ -57,7 +63,8 @@ spectrogram(ts.data,256,200,512,ts.fs*1e-3,'yaxis')
 xlabel('Time (ms)')
 ylabel('Frequency (kHz)')
 colormap(jet)
-set(gca,'clim',[-70 -40])
+cMax = max(get(gca,'cLim'));
+set(gca,'clim',[cMax-cRange cMax])
 
 colorbar
 % play sound recorded
