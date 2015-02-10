@@ -40,6 +40,7 @@ ts.data = ts.data - mean(ts.data);
 % estimate frequency spectrum
 fd = calc_spectrum(ts.data,ts.fs);
 fd = convert_spectrum(fd,'Vrms/rtHz');
+fd.units = 'SPL re 1uPa @ 1m (rms/rtHz)';
 
 % plot data
 figure(gcf)
@@ -47,7 +48,7 @@ figure(gcf)
 subplot(4,1,1)
 plot(ts.time,ts.data(:,1))
 xlabel('Time (sec)')
-ylabel('Amplitude (V)')
+ylabel('SPL re 1 uPa @ 1m')
 grid on
 
 subplot(4,1,2)
